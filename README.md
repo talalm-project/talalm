@@ -21,6 +21,12 @@ services. For now it starts only RustFS, an S3-compatible object storage server.
 
 ### Start RustFS
 
+Create the root environment file:
+
+```bash
+cp .env.example .env
+```
+
 From the repository root:
 
 ```bash
@@ -62,6 +68,25 @@ For non-default credentials, set environment variables before starting:
 ```bash
 RUSTFS_ACCESS_KEY=localadmin RUSTFS_SECRET_KEY=localadmin123 docker compose up -d
 ```
+
+### Create the Development Bucket
+
+Create the bucket configured in the root `.env`:
+
+```bash
+bin/create_dev_bucket.sh
+```
+
+The script reads `.env` from the repository root and uses:
+
+* `RUSTFS_ENDPOINT`
+* `RUSTFS_ACCESS_KEY`
+* `RUSTFS_SECRET_KEY`
+* `RUSTFS_BUCKET`
+* `RUSTFS_REGION`
+
+It also accepts the equivalent API storage variables, such as
+`STORAGE_S3_BUCKET`, when `RUSTFS_*` values are not set.
 
 ### Upload a File with boto3
 
