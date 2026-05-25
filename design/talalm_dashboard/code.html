@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+
+<html class="dark" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Talalm AI Dashboard</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@600;700&amp;family=Geist:wght@400;500&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "on-error": "#690005",
+                        "surface": "#29051e",
+                        "inverse-surface": "#ffd8eb",
+                        "on-primary-fixed": "#3d0025",
+                        "primary-container": "#772953",
+                        "tertiary-fixed-dim": "#cdc5bd",
+                        "secondary-fixed-dim": "#ffb59e",
+                        "surface-container-low": "#330d27",
+                        "on-tertiary": "#34302a",
+                        "surface-container-high": "#441b36",
+                        "on-secondary": "#5e1700",
+                        "surface-tint": "#ffafd2",
+                        "tertiary-fixed": "#e9e1d8",
+                        "tertiary": "#cdc5bd",
+                        "surface-container-highest": "#512641",
+                        "on-tertiary-container": "#bab3aa",
+                        "on-tertiary-fixed-variant": "#4b4640",
+                        "surface-bright": "#562b45",
+                        "surface-container": "#38112b",
+                        "error": "#ffb4ab",
+                        "on-secondary-fixed": "#3a0b00",
+                        "primary-fixed-dim": "#ffafd2",
+                        "on-tertiary-fixed": "#1e1b16",
+                        "on-error-container": "#ffdad6",
+                        "on-primary-fixed-variant": "#782a54",
+                        "secondary-container": "#c33900",
+                        "secondary": "#ffb59e",
+                        "on-surface": "#ffd8eb",
+                        "tertiary-container": "#4a453f",
+                        "surface-container-lowest": "#220118",
+                        "primary-fixed": "#ffd8e7",
+                        "on-secondary-container": "#ffe7e0",
+                        "on-primary-container": "#f995c4",
+                        "background": "#29051e",
+                        "outline-variant": "#524249",
+                        "inverse-on-surface": "#4c223c",
+                        "on-secondary-fixed-variant": "#852400",
+                        "primary": "#ffafd2",
+                        "error-container": "#93000a",
+                        "secondary-fixed": "#ffdbd0",
+                        "inverse-primary": "#95416c",
+                        "surface-variant": "#512641",
+                        "on-primary": "#5b113c",
+                        "on-surface-variant": "#d7c1c8",
+                        "surface-dim": "#29051e",
+                        "on-background": "#ffd8eb",
+                        "outline": "#9f8c92"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0px",
+                        "lg": "0px",
+                        "xl": "0px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "sidebar-width": "280px",
+                        "container-max-width": "1440px",
+                        "unit": "8px",
+                        "gutter": "1.5rem"
+                    },
+                    "fontFamily": {
+                        "label-md": ["JetBrains Mono"],
+                        "label-sm": ["JetBrains Mono"],
+                        "headline-lg": ["Hanken Grotesk"],
+                        "body-lg": ["Geist"],
+                        "body-md": ["Geist"],
+                        "headline-md": ["Hanken Grotesk"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "1.2", "letterSpacing": "0.05em", "fontWeight": "500"}],
+                        "label-sm": ["12px", {"lineHeight": "1.2", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "1.2", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}]
+                    }
+                },
+            },
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        body {
+            background-color: #300A24; /* Explicit Ubuntu purple as per instruction */
+        }
+        .sidebar-active {
+            background-color: #E95420 !important;
+            color: white !important;
+        }
+    </style>
+</head>
+<body class="text-on-surface font-body-md overflow-hidden">
+<!-- TopNavBar (Horizontal Desktop View) -->
+<nav class="flex justify-between items-center px-6 py-2 w-full h-16 z-50 bg-background border-b border-primary-container fixed top-0 left-0">
+<div class="flex items-center gap-8">
+<span class="font-headline-md text-headline-md text-primary uppercase tracking-tighter">Talalm</span>
+<div class="hidden md:flex gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:bg-primary-container transition-colors px-3 py-1" href="#">Guide</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:bg-primary-container transition-colors px-3 py-1" href="#">Resources</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:bg-primary-container transition-colors px-3 py-1" href="#">API</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<button class="hidden md:flex items-center gap-2 bg-secondary-container text-on-secondary-container px-4 py-2 font-label-md active:opacity-80 transition-colors">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+                New Project
+            </button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-primary-container p-2" data-icon="notifications">notifications</button>
+<button class="material-symbols-outlined text-on-surface-variant hover:bg-primary-container p-2" data-icon="settings">settings</button>
+<img alt="User Profile Avatar" class="w-8 h-8 rounded-full border border-outline" data-alt="A professional close-up headshot of a person with a neutral expression, set against a dark, minimalist background. The lighting is sharp and cinematic, highlighting facial features with a cool-toned rim light. The overall aesthetic is clean, modern, and high-contrast, fitting a technical research environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCKGB2v4hMkOFcUIUDgAbB_nurt5HUDcEhxvk_NrONXe9A_-JO0nqoD7elAw2oxNQH5oDlLiXcM5R4FZMBy15Uqb6SVN82C9nO5AAgL67rk4P4vncwO1UBKWgTJWajx_nL1SYC4_68zmYBQJd5zGn7IasA_5bNk9G5JuxasrKi09l12vKjD7tzp0qHCTKE0-rKQ8SNSiYdjSc5vnTVKTDNHOp92Z8PcT2ForLFR8kcO5ApWXkaPpcsEFfQ_7eIwfd1ICZRAhz708A_w"/>
+</div>
+</nav>
+<div class="flex h-screen pt-16">
+<!-- SideNavBar -->
+<aside class="fixed left-0 top-16 h-[calc(100vh-64px)] flex flex-col w-[280px] z-40 bg-surface-container border-r border-primary-container hidden md:flex">
+<div class="p-6">
+<div class="flex items-center gap-3 mb-2">
+<span class="font-headline-md text-headline-md text-primary">Research Studio</span>
+</div>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">V1.0.4-Alpha</p>
+</div>
+<div class="px-3 flex-grow space-y-1">
+<button class="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md sidebar-active transition-transform active:scale-[0.97]">
+<span class="material-symbols-outlined" data-icon="folder_open">folder_open</span>
+                    Sources
+                </button>
+<button class="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface hover:bg-surface-variant transition-transform active:scale-[0.97]">
+<span class="material-symbols-outlined" data-icon="description">description</span>
+                    Notebooks
+                </button>
+<button class="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface hover:bg-surface-variant transition-transform active:scale-[0.97]">
+<span class="material-symbols-outlined" data-icon="forum">forum</span>
+                    Chat History
+                </button>
+<button class="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface hover:bg-surface-variant transition-transform active:scale-[0.97]">
+<span class="material-symbols-outlined" data-icon="science">science</span>
+                    Experiments
+                </button>
+<button class="w-full flex items-center gap-3 px-4 py-3 font-label-md text-label-md text-on-surface hover:bg-surface-variant transition-transform active:scale-[0.97]">
+<span class="material-symbols-outlined" data-icon="delete">delete</span>
+                    Trash
+                </button>
+</div>
+<div class="p-4 border-t border-primary-container space-y-1">
+<button class="w-full flex items-center gap-3 px-4 py-2 font-label-md text-label-md text-on-surface hover:bg-surface-variant">
+<span class="material-symbols-outlined" data-icon="help">help</span>
+                    Documentation
+                </button>
+<button class="w-full flex items-center gap-3 px-4 py-2 font-label-md text-label-md text-on-surface hover:bg-surface-variant">
+<span class="material-symbols-outlined" data-icon="contact_support">contact_support</span>
+                    Support
+                </button>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-grow md:ml-[280px] p-8 overflow-y-auto">
+<!-- Header Section -->
+<div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-4">
+<div>
+<h1 class="font-headline-lg text-headline-lg text-on-surface">Notebook Dashboard</h1>
+<p class="font-body-md text-on-surface-variant mt-2">Manage your AI-powered research projects and experimental nodes.</p>
+</div>
+<button class="bg-[#E95420] text-white px-6 py-3 font-label-md flex items-center gap-2 hover:brightness-110 active:scale-95 transition-all">
+<span class="material-symbols-outlined" data-icon="add_box">add_box</span>
+                    Create New Notebook
+                </button>
+</div>
+<!-- Bento Grid of Notebook Cards -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+<!-- Card 1: Project Alpha -->
+<div class="bg-[#5E2750] p-6 flex flex-col justify-between border-l-4 border-[#E95420] group hover:bg-[#6e2f5e] transition-colors h-64">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm px-2 py-1 bg-background text-primary border border-primary-container">ACTIVE</span>
+<span class="material-symbols-outlined text-on-surface-variant group-hover:text-primary transition-colors" data-icon="more_vert">more_vert</span>
+</div>
+<h3 class="font-headline-md text-on-surface mb-2">Project Alpha</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-2">Quantum computing simulations and neural network interface protocols for early-stage prototyping.</p>
+</div>
+<div class="flex justify-between items-center mt-4">
+<span class="font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span> 2h ago
+                        </span>
+<button class="text-[#E95420] font-label-md flex items-center gap-1 group-hover:translate-x-1 transition-transform">
+                            Open <span class="material-symbols-outlined" data-icon="arrow_forward">arrow_forward</span>
+</button>
+</div>
+</div>
+<!-- Card 2: Research Notes -->
+<div class="bg-[#5E2750] p-6 flex flex-col justify-between group hover:bg-[#6e2f5e] transition-colors h-64">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm px-2 py-1 bg-background text-on-surface-variant border border-primary-container">DRAFT</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+<h3 class="font-headline-md text-on-surface mb-2">Research Notes</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-2">A compilation of raw data from the multi-agent consensus experiments conducted in Q3.</p>
+</div>
+<div class="flex justify-between items-center mt-4">
+<span class="font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span> Oct 12
+                        </span>
+<button class="text-[#E95420] font-label-md flex items-center gap-1">
+                            Edit <span class="material-symbols-outlined" data-icon="edit">edit</span>
+</button>
+</div>
+</div>
+<!-- Card 3: AI Ethics -->
+<div class="bg-[#5E2750] p-6 flex flex-col justify-between group hover:bg-[#6e2f5e] transition-colors h-64">
+<div>
+<div class="flex justify-between items-start mb-4">
+<span class="font-label-sm px-2 py-1 bg-background text-secondary border border-primary-container">REVIEW</span>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="more_vert">more_vert</span>
+</div>
+<h3 class="font-headline-md text-on-surface mb-2">AI Ethics</h3>
+<p class="font-body-md text-on-surface-variant line-clamp-2">Frameworks for alignment in large language models and mitigation of recursive bias loops.</p>
+</div>
+<div class="flex justify-between items-center mt-4">
+<span class="font-label-sm text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]" data-icon="schedule">schedule</span> 1d ago
+                        </span>
+<button class="text-[#E95420] font-label-md flex items-center gap-1">
+                            Review <span class="material-symbols-outlined" data-icon="visibility">visibility</span>
+</button>
+</div>
+</div>
+<!-- Card 4: Data Visualizer (Full width on small, grid item on large) -->
+<div class="lg:col-span-2 bg-[#38112b] p-8 border border-primary-container flex flex-col md:flex-row gap-8 items-center h-auto min-h-64">
+<div class="flex-grow">
+<h3 class="font-headline-md text-primary mb-2">Workspace Insight</h3>
+<p class="font-body-md text-on-surface mb-6">Your AI usage has increased by 24% this week. Most active notebook: <strong>Project Alpha</strong>.</p>
+<div class="flex gap-4">
+<button class="bg-primary-container text-white px-4 py-2 font-label-md active:scale-95 transition-transform">View Analytics</button>
+<button class="border border-outline text-on-surface px-4 py-2 font-label-md hover:bg-surface-variant">Export Data</button>
+</div>
+</div>
+<div class="w-full md:w-48 h-32 bg-[#29051e] flex items-end justify-between p-2 gap-1 border border-primary-container">
+<div class="w-1/6 bg-secondary h-1/2"></div>
+<div class="w-1/6 bg-secondary h-2/3"></div>
+<div class="w-1/6 bg-secondary h-1/3"></div>
+<div class="w-1/6 bg-secondary h-full"></div>
+<div class="w-1/6 bg-secondary h-3/4"></div>
+<div class="w-1/6 bg-secondary h-1/2"></div>
+</div>
+</div>
+<!-- Card 5: Empty State Placeholder -->
+<div class="border-2 border-dashed border-primary-container p-6 flex flex-col items-center justify-center h-64 text-on-surface-variant hover:border-secondary transition-colors cursor-pointer">
+<span class="material-symbols-outlined text-4xl mb-2" data-icon="post_add">post_add</span>
+<span class="font-label-md">Template Gallery</span>
+</div>
+</div>
+</main>
+</div>
+<!-- Floating Action Button (Mobile Only) -->
+<button class="md:hidden fixed bottom-6 right-6 w-14 h-14 bg-[#E95420] text-white flex items-center justify-center rounded-none shadow-none z-50 active:scale-90 transition-transform">
+<span class="material-symbols-outlined" data-icon="add">add</span>
+</button>
+<script>
+        // Simple micro-interactions for the cards
+        document.querySelectorAll('.bg-[#5E2750]').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                card.style.transform = 'translateY(-4px)';
+            });
+            card.addEventListener('mouseleave', () => {
+                card.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Search functionality placeholder
+        const searchInput = document.querySelector('input');
+        if (searchInput) {
+            searchInput.addEventListener('focus', () => {
+                searchInput.classList.add('ring-1', 'ring-[#E95420]');
+            });
+            searchInput.addEventListener('blur', () => {
+                searchInput.classList.remove('ring-1', 'ring-[#E95420]');
+            });
+        }
+    </script>
+</body></html>

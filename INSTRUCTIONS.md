@@ -11,3 +11,4 @@ A local / online AI notebook app.
 ## Rules
 
 * Each application should be guided by its respective `INSTRUCTIONS.md`
+* When implementing user interface elements, make sure to follow the design spec in `./design`

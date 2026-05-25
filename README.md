@@ -135,3 +135,44 @@ print(f"Uploaded {file_path} to s3://{bucket_name}/{object_key}")
 ```
 
 You can verify the upload in the RustFS console at `http://localhost:9001`.
+
+## Notebook Worker
+
+Uploaded notebook files are stored in RustFS first, then embedded by a backend
+worker. The worker polls `notebook_files` for `pending` records, downloads each
+file from RustFS, generates embeddings, writes rows to `notebook_vectors`, and
+marks the file `active` when processing succeeds.
+
+From the API directory:
+
+```bash
+cd talalmapi
+python -m app.cli system:start_notebook_worker
+```
+
+The worker runs as a foreground process and logs what it is doing every polling
+cycle. It checks for one pending file every 5 seconds. Keep it running while
+testing notebook uploads.
+
+To run it in the background during local development:
+
+```bash
+cd talalmapi
+nohup python -m app.cli system:start_notebook_worker > ../notebook_worker.log 2>&1 &
+```
+
+Follow the logs:
+
+```bash
+tail -f notebook_worker.log
+```
+
+Stop the background worker:
+
+```bash
+pkill -f "system:start_notebook_worker"
+```
+
+In production, run the same command under a process manager such as systemd,
+supervisord, Docker Compose, or your deployment platform's worker process
+facility so it restarts on failure.
