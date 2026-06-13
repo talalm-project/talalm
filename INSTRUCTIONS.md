@@ -6,7 +6,6 @@ A local / online AI notebook app.
 
 * `talalmapi`: The backend API for the application
 * `talalmweb`: The frontend for TalaLM
-* `talalmworker`: A worker program for backend processing
 
 ## Rules
 

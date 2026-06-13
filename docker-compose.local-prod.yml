@@ -1,0 +1,160 @@
+name: talalm_local
+
+services:
+  postgres:
+    image: pgvector/pgvector:pg16
+    container_name: talalm-postgres
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-developer}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      POSTGRES_DB: ${POSTGRES_DB:-talalm_development}
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $${POSTGRES_USER} -d $${POSTGRES_DB}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  rustfs-perms:
+    image: alpine:latest
+    container_name: talalm-rustfs-perms
+    volumes:
+      - rustfs_data:/data
+      - rustfs_logs:/logs
+    command: >
+      sh -c "chown -R 10001:10001 /data /logs"
+    restart: "no"
+
+  rustfs:
+    image: rustfs/rustfs:latest
+    container_name: talalm-rustfs
+    depends_on:
+      rustfs-perms:
+        condition: service_completed_successfully
+    security_opt:
+      - no-new-privileges:true
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      RUSTFS_VOLUMES: /data
+      RUSTFS_ADDRESS: 0.0.0.0:9000
+      RUSTFS_CONSOLE_ADDRESS: 0.0.0.0:9001
+      RUSTFS_CONSOLE_ENABLE: "true"
+      RUSTFS_ACCESS_KEY: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
+      RUSTFS_SECRET_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}
+      RUSTFS_OBS_LOGGER_LEVEL: info
+    volumes:
+      - rustfs_data:/data
+      - rustfs_logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:9000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  api-migrate:
+    build:
+      context: ./talalmapi
+    image: talalm-api:local
+    container_name: talalm-api-migrate
+    command: >
+      sh -c "python -m app.cli db:upgrade &&
+             python -m app.cli system:seed &&
+             python -m app.cli services:create_bucket"
+    environment:
+      APP_ENV: development
+      SECRET_KEY: ${SECRET_KEY:-talalm-secret}
+      DB_NAME: ${DB_NAME:-talalm}
+      DB_USERNAME: ${POSTGRES_USER:-developer}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      STORAGE_MAX_CONTENT_LENGTH_MB: ${STORAGE_MAX_CONTENT_LENGTH_MB:-100}
+      STORAGE_S3_BUCKET: ${RUSTFS_BUCKET:-talalm-local}
+      STORAGE_S3_REGION: ${RUSTFS_REGION:-us-east-1}
+      STORAGE_S3_ENDPOINT: http://rustfs:9000
+      STORAGE_S3_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
+      STORAGE_S3_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}
+      STORAGE_S3_PUBLIC_URL: http://localhost:9000/${RUSTFS_BUCKET:-talalm-local}
+      STORAGE_S3_PRESIGNED_EXPIRES_IN: ${STORAGE_S3_PRESIGNED_EXPIRES_IN:-3600}
+      STORAGE_S3_SIGNATURE_VERSION: s3v4
+      STORAGE_S3_ADDRESSING_STYLE: path
+      STORAGE_S3_CREATE_BUCKET: "true"
+      LOCAL_MODELS_MANIFEST_PATH: /app/manifest-local-models.yml
+    volumes:
+      - ./models:/app/models:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+      rustfs:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    image: talalm-api:local
+    container_name: talalm-api
+    ports:
+      - "${API_PORT:-3000}:3000"
+    environment:
+      APP_ENV: development
+      SECRET_KEY: ${SECRET_KEY:-talalm-secret}
+      DB_NAME: ${DB_NAME:-talalm}
+      DB_USERNAME: ${POSTGRES_USER:-developer}
+      DB_PASSWORD: ${POSTGRES_PASSWORD:-password}
+      DB_HOST: postgres
+      DB_PORT: 5432
+      STORAGE_MAX_CONTENT_LENGTH_MB: ${STORAGE_MAX_CONTENT_LENGTH_MB:-100}
+      STORAGE_S3_BUCKET: ${RUSTFS_BUCKET:-talalm-local}
+      STORAGE_S3_REGION: ${RUSTFS_REGION:-us-east-1}
+      STORAGE_S3_ENDPOINT: http://rustfs:9000
+      STORAGE_S3_ACCESS_KEY_ID: ${RUSTFS_ACCESS_KEY:-rustfsadmin}
+      STORAGE_S3_SECRET_ACCESS_KEY: ${RUSTFS_SECRET_KEY:-rustfsadmin}
+      STORAGE_S3_PUBLIC_URL: http://localhost:9000/${RUSTFS_BUCKET:-talalm-local}
+      STORAGE_S3_PRESIGNED_EXPIRES_IN: ${STORAGE_S3_PRESIGNED_EXPIRES_IN:-3600}
+      STORAGE_S3_SIGNATURE_VERSION: s3v4
+      STORAGE_S3_ADDRESSING_STYLE: path
+      STORAGE_S3_CREATE_BUCKET: "true"
+      LOCAL_MODELS_MANIFEST_PATH: /app/manifest-local-models.yml
+      INFERENCE_SYSTEM_PROMPT: ${INFERENCE_SYSTEM_PROMPT:-You are a helpful assistant. Answer in Markdown. Keep the response complete and concise enough to fit within the configured maximum output tokens.}
+    volumes:
+      - ./models:/app/models:ro
+    depends_on:
+      api-migrate:
+        condition: service_completed_successfully
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://127.0.0.1:3000/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 20s
+
+  web:
+    build:
+      context: ./talalmweb
+      args:
+        API_BASE_URL: ${API_BASE_URL:-http://localhost:3000}
+        TOKEN_BEARER: ${TOKEN_BEARER:-ADMIN_PANEL_TOKEN_BEARER}
+        CURRENT_USER: ${CURRENT_USER:-ADMIN_PANEL_CURRENT_USER}
+        API_VERSION: ${API_VERSION:-}
+    image: talalm-web:local
+    container_name: talalm-web
+    ports:
+      - "${WEB_PORT:-8000}:8000"
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
+  rustfs_data:
+  rustfs_logs:
