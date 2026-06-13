@@ -39,7 +39,7 @@ Suggested columns:
 
 * `id`: UUID primary key
 * `connector_id`: UUID foreign key to `connectors.id`
-* `provider`: string, for example `local` or `openai`
+* `provider`: string, currently `local`
 * `model_name`: string
 * `model_path`: nullable string for local GGUF embedding models
 * `dimensions`: integer vector size produced by the model
